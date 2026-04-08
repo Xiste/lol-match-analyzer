@@ -1,4 +1,6 @@
 # .gitignore
 
 .env
-.db
+*.db
+*.json
+__pycache__/
