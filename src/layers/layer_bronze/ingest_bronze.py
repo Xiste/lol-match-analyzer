@@ -11,7 +11,8 @@ import src.core.riot_cliente as riot_cliente
 
 
 BRONZE_DIR = Path("data/bronze")
-
+BRONZE_DIR.mkdir(parents=True, exist_ok=True)
+                 
 def iniciar_ingestao_bruta(nick, tag):
     # Pegando a info do jogador
     print(f"🔍 Buscando dados de: {nick}#{tag}...")
@@ -48,6 +49,4 @@ def iniciar_ingestao_bruta(nick, tag):
             )
             
     print(f"\n✅ Sucesso! JSONs em 'data/bronze/' e registros em '{engine.url.database}'")
-
-if __name__ == "__main__":
-    iniciar_ingestao_bruta("Xistê", "xiste")
+    
