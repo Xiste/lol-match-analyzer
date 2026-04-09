@@ -1,14 +1,12 @@
 import requests
 import os
 from dotenv import load_dotenv
+from src.core.config import BASE_URL, QUANTIDADE_PARTIDAS
 
 load_dotenv()
 
 api_key = os.getenv("RIOT_API_KEY")
 headers = {"X-Riot-Token": api_key}
-
-BASE_URL = "https://americas.api.riotgames.com"
-QUANTIDADE_PARTIDAS = 20
 
 # pegar url
 def _get(url):
@@ -17,7 +15,7 @@ def _get(url):
     return response.json()
 
 # funcao para pegar id do usuario
-def get_puuid_conta(nick: str, tag:str, regiao: str="br1"):
+def get_puuid_conta(nick: str, tag:str):
     url = f"{BASE_URL}/riot/account/v1/accounts/by-riot-id/{nick}/{tag}"
     conta = _get(url)
     

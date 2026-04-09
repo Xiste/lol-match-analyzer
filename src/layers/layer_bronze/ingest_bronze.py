@@ -2,17 +2,12 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-# 2. Bibliotecas de terceiros
 from sqlalchemy import text
 
-# 3. Módulos do próprio projeto
 from src.core.db import engine
 import src.core.riot_cliente as riot_cliente
+from src.core.config import BRONZE_DIR
 
-
-BRONZE_DIR = Path("data/bronze")
-BRONZE_DIR.mkdir(parents=True, exist_ok=True)
-                 
 def iniciar_ingestao_bruta(nick, tag):
     # Pegando a info do jogador
     print(f"🔍 Buscando dados de: {nick}#{tag}...")
