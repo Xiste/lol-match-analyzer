@@ -7,8 +7,7 @@ engine = create_engine("sqlite:///data/lol.db")
  
 _SCHEMAS = [
     "src/layers/layer_bronze/schema_bronze.sql",
-    "src/layers/layer_silver/schema_silver.sql",
-    "src/layers/layer_gold/schema_gold.sql",
+    "src/layers/layer_silver/schema_silver.sql"
 ]
  
 def inicializar_banco() -> None:
