@@ -27,7 +27,7 @@ def get_resumo_jogador(puuid: str) -> pd.DataFrame:
             ROUND(AVG(d.deaths), 2)         AS media_deaths,
             ROUND(AVG(d.assists), 2)        AS media_assists,
             ROUND(AVG(d.dpm), 0)            AS dpm_medio,
-            ROUND(AVG(d.kp) * 100, 1)       AS kp_medio,
+            ROUND(AVG(d.kp), 1)       AS kp_medio,
             ROUND(AVG(d.cs), 0)             AS cs_medio,
             ROUND(AVG(d.ouro), 0)           AS ouro_medio,
             ROUND(AVG(d.placar_visao), 1)   AS visao_media,

@@ -1,0 +1,5 @@
+cluster,dpm,kp,cs,gpm,placar_visao,visao_por_minuto,solo_kills,pct_dano_time,pct_dano_recebido_time,tempo_cc_aplicado,wards_colocadas,wards_controle_colocadas,total_partidas,rotulo,descricao
+0,1321.61,56.25,231.04,540.79,24.25,0.76,4.54,0.31,0.22,241.8,7.42,0.61,487,🗡️ Carry de Dano,"Alto DPM, focado em eliminar inimigos"
+1,843.36,45.83,209.05,436.82,25.85,0.82,1.58,0.21,0.21,361.48,7.16,1.13,1080,🔒 Controlador de Área,"Muito CC aplicado, engage/peeling"
+2,413.72,54.2,37.47,312.79,81.1,2.56,0.25,0.1,0.16,211.87,26.97,4.9,465,👁️ Suporte/Visionário,"Alta visão por minuto, suporte de mapa"
+3,477.68,25.22,139.71,367.54,16.83,0.6,0.62,0.16,0.19,147.51,6.18,0.45,578,Grupo 3,Perfil misto

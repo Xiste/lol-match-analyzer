@@ -10,12 +10,13 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-def _processar_uma(match_id: str, caminho:str) -> None:
+def _processar_uma(match_id: str, caminho:str):
     
     dados = extractor.ler_json(match_id, caminho)
 
     partida, players, desempenhos = transformer.transformar(dados)
 
+    
     with engine.begin() as conn:
         loader.salvar_players(conn, players)
         loader.salvar_partida(conn, partida)
