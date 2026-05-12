@@ -15,26 +15,17 @@ from src.layers.layer_gold.clustering import (
     CAMINHO_SCALER_CLUSTER,
 )
 
-# ---------------------------------------------------------------------------
-# Configuração
-# ---------------------------------------------------------------------------
 st.set_page_config(page_title="LoL Match Analyzer", layout="wide", page_icon="🎮")
 
 CAMINHO_MODELO = Path("data/models/classificador.pkl")
 CAMINHO_SCALER = Path("data/models/scaler_classificador.pkl")
 CAMINHO_IMPORT = Path("data/models/feature_importance.csv")
 
-# ---------------------------------------------------------------------------
-# Helpers
-# ---------------------------------------------------------------------------
-
 def _modelo_disponivel() -> bool:
     return CAMINHO_MODELO.exists() and CAMINHO_SCALER.exists()
 
-
 def _cluster_disponivel() -> bool:
     return CAMINHO_KMEANS.exists() and CAMINHO_SCALER_CLUSTER.exists()
-
 
 def _carregar_modelo():
     with open(CAMINHO_MODELO, "rb") as f:
@@ -42,7 +33,6 @@ def _carregar_modelo():
     with open(CAMINHO_SCALER, "rb") as f:
         scaler = pickle.load(f)
     return modelo, scaler
-
 
 def atualizar_dados(nick: str, tag: str) -> None:
     try:
@@ -54,7 +44,6 @@ def atualizar_dados(nick: str, tag: str) -> None:
     except Exception as exc:
         st.error(f"Erro ao atualizar: {exc}")
 
-
 def treinar_modelo() -> None:
     try:
         with st.spinner("Treinando o classificador..."):
@@ -65,7 +54,6 @@ def treinar_modelo() -> None:
     except Exception as exc:
         st.error(f"Erro ao treinar classificador: {exc}")
 
-
 def treinar_cluster() -> None:
     try:
         with st.spinner("Treinando o clustering..."):
@@ -75,11 +63,6 @@ def treinar_cluster() -> None:
         st.cache_data.clear()
     except Exception as exc:
         st.error(f"Erro ao treinar clustering: {exc}")
-
-
-# ---------------------------------------------------------------------------
-# Queries
-# ---------------------------------------------------------------------------
 
 @st.cache_data
 def carregar_dados_do_banco() -> pd.DataFrame:
@@ -114,17 +97,11 @@ def carregar_dados_do_banco() -> pd.DataFrame:
         conn.close()
     return df
 
-
 @st.cache_data
 def carregar_feature_importance() -> pd.DataFrame:
     if not CAMINHO_IMPORT.exists():
         return pd.DataFrame()
     return pd.read_csv(CAMINHO_IMPORT)
-
-
-# ---------------------------------------------------------------------------
-# Sidebar
-# ---------------------------------------------------------------------------
 
 with st.sidebar:
     st.header("🔍 Buscar Jogador")
@@ -156,11 +133,6 @@ with st.sidebar:
     if st.button("🔵 Treinar Clustering", use_container_width=True):
         treinar_cluster()
 
-
-# ---------------------------------------------------------------------------
-# Dados principais
-# ---------------------------------------------------------------------------
-
 df = carregar_dados_do_banco()
 st.title("🎮 LoL Match Analyzer")
 
@@ -177,20 +149,12 @@ df_jogador["kda_ratio"] = (
     / df_jogador["deaths"].replace(0, 1)
 )
 
-# ===========================================================================
-# ABAS
-# ===========================================================================
-
 aba_geral, aba_gold, aba_cluster, aba_importancia = st.tabs([
     "📊 Visão Geral",
     "🤖 Análise Gold (ML)",
     "🔵 Estilo de Jogo",
     "🔍 Feature Importance",
 ])
-
-# ---------------------------------------------------------------------------
-# ABA 1 — VISÃO GERAL
-# ---------------------------------------------------------------------------
 
 with aba_geral:
     st.header(f"📊 Histórico Recente — {jogador}")
@@ -254,12 +218,8 @@ with aba_geral:
             "kda_ratio":"KDA","kp":"KP%","cs":"CS","ouro":"Ouro",
             "torres_destruidas":"Torres","dragoes_abatidos":"Drags",
         }),
-        use_container_width=True, hide_index=True,
+        width='stretch', hide_index=True,
     )
-
-# ---------------------------------------------------------------------------
-# ABA 2 — ANÁLISE GOLD (ML)
-# ---------------------------------------------------------------------------
 
 with aba_gold:
     st.header("🤖 Análise com Modelo de Machine Learning")
@@ -307,7 +267,7 @@ with aba_gold:
                     "data":"Data","campeao":"Campeão","posicao":"Posição","vitoria":"Real",
                     "prob_vitoria":"Prob. Vitória (%)","acertou":"Modelo Acertou",
                 }),
-                use_container_width=True, hide_index=True,
+                width='stretch', hide_index=True,
             )
 
     st.divider()
@@ -345,10 +305,6 @@ with aba_gold:
                 else:
                     st.success("✅ Performance consistente entre vitórias e derrotas.")
 
-# ---------------------------------------------------------------------------
-# ABA 3 — ESTILO DE JOGO (CLUSTERING)
-# ---------------------------------------------------------------------------
-
 with aba_cluster:
     st.header("🔵 Estilo de Jogo — Clustering")
 
@@ -362,18 +318,15 @@ with aba_cluster:
         st.error("Arquivo de perfis não encontrado. Retreine o clustering.")
         st.stop()
 
-    # Prevê cluster de cada partida do jogador
     cols_cluster     = [c for c in FEATURES_CLUSTERING if c in df_jogador.columns]
     clusters_jogador = prever_cluster(df_jogador[cols_cluster].fillna(0))
     df_jogador["cluster"] = clusters_jogador.values
 
-    # Cluster dominante
     cluster_dominante = int(df_jogador["cluster"].mode()[0])
     rotulo    = df_perfis.loc[cluster_dominante, "rotulo"]    if "rotulo"    in df_perfis.columns else f"Grupo {cluster_dominante}"
     descricao = df_perfis.loc[cluster_dominante, "descricao"] if "descricao" in df_perfis.columns else ""
     n_partidas_dominante = (df_jogador["cluster"] == cluster_dominante).sum()
 
-    # --- Card do perfil ---
     st.markdown(f"""
     <div style="padding:24px;border-radius:12px;border:2px solid #4f8ef7;text-align:center;margin-bottom:16px;">
         <h2>{rotulo}</h2>
@@ -384,7 +337,6 @@ with aba_cluster:
 
     st.divider()
 
-    # --- Winrate por cluster ---
     st.subheader("🏆 Winrate por Estilo de Jogo")
     st.caption("Em qual modo de jogar você vence mais?")
 
@@ -410,14 +362,12 @@ with aba_cluster:
 
     st.divider()
 
-    # --- Evolução do estilo ao longo do tempo ---
     st.subheader("📈 Evolução do Estilo ao Longo das Partidas")
     st.caption("Cada valor é um cluster diferente — veja se seu estilo mudou com o tempo.")
     st.line_chart(df_jogador.reset_index(drop=True)["cluster"])
 
     st.divider()
 
-    # --- Você vs média do seu cluster ---
     st.subheader(f"📊 Você vs Média do Perfil ({rotulo})")
     st.caption("Compara suas médias com o centróide do cluster dominante.")
 
@@ -449,22 +399,17 @@ with aba_cluster:
                 "Média do Perfil": round(media_ref, 2),
                 "Diferença (%)":   f"{diff_pct:+.1f}%",
             })
-        st.dataframe(pd.DataFrame(linhas), use_container_width=True, hide_index=True)
+        st.dataframe(pd.DataFrame(linhas), width='stretch', hide_index=True)
 
     st.divider()
 
-    # --- Perfil de todos os clusters ---
     st.subheader("🗂️ Perfil Médio de Cada Cluster")
     st.caption("Referência de como cada estilo se comporta nos dados gerais.")
     colunas_exibir = (["rotulo"] if "rotulo" in df_perfis.columns else []) + [c for c in cols_cluster if c in df_perfis.columns]
     st.dataframe(
         df_perfis[colunas_exibir].rename(columns={"rotulo": "Perfil"}),
-        use_container_width=True,
+        width='stretch',
     )
-
-# ---------------------------------------------------------------------------
-# ABA 4 — FEATURE IMPORTANCE
-# ---------------------------------------------------------------------------
 
 with aba_importancia:
     st.header("🔍 O que o Modelo Aprendeu?")
@@ -515,5 +460,5 @@ with aba_importancia:
         df_imp.sort_values("importancia", ascending=False)
         .rename(columns={"feature": "Feature", "importancia": "Importância"})
         .assign(Importância=lambda x: x["Importância"].map("{:.2%}".format)),
-        use_container_width=True, hide_index=True,
+        width='stretch', hide_index=True,
     )
